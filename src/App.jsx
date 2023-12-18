@@ -1,13 +1,14 @@
 import { useContext, useState } from 'react'
 import Home from './Pages/Home'
 import Navbar from './Components/Navbar/Navbar'
-import {Routes, Route, useNavigate} from 'react-router-dom'
+import {Routes, Route, useNavigate, Navigate} from 'react-router-dom'
 import Signup from './Pages/Signup';
-import  AuthProvider  from './context/AuthContext'
+import  AuthProvider,{AuthContext}  from './context/AuthContext'
 import Login from './Pages/Login';
 import AddProduct from './Pages/AddProduct';
 
 function App() {
+  const user = useContext(AuthContext)
   const navigate = useNavigate();
   return (
     <>
@@ -17,7 +18,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/login" element={<Login/>} />
-        <Route path="/add-product" element={<AddProduct/>} />
+        {
+          user && user.name ? ( 
+            <Route path="/add-product" element={<AddProduct/>} />
+        ) : (<Route path='/add-product' element={< Navigate to="/"/>}/>)
+        }
       </Routes>
       </AuthProvider>
     </>

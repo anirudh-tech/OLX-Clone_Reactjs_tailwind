@@ -1,4 +1,6 @@
+import { collection, getDocs } from 'firebase/firestore';
 import React, {  createContext, useContext, useEffect, useState } from 'react'
+import { db } from '../firebase/config';
 
 const DataContext = createContext();
 export default function DataProvider({children}) {
@@ -7,28 +9,18 @@ export default function DataProvider({children}) {
     const [error, setError] = useState(null);
     const [limit, setLimit] = useState(8)
     useEffect(() => {
-        const handleAPICall = async () => {
-            console.log("called function");
-            try {
-                const res = await fetch(`https://fakestoreapi.com/products?limit=${limit}`);
-                if (!res.ok) {
-                    console.log("not coming");
-                    throw new Error('Could not get data');
-                }
-                const Data = await res.json();
-                // console.log(Data,"dataa");
-                setData(Data)
-                setLoading(false)
-                setError(null)
-            } catch (error) {
-                console.error("Error loading data:", error);
-                setError("Error loading data. Please try again later.");
-                setLoading(false);
-            }
-        };
-        handleAPICall()
+        getDataFromDb()
     },[limit]);
 
+    const getDataFromDb = () =>{
+        getDocs(collection(db,"products")).then((snapshot) => {
+            const products = [];
+            snapshot.forEach((snap) => {
+            products.push({ productId: snap.id,...snap.data()})
+            })
+            setData(products)
+        })
+    }
 
     const incrementLimit = () => {
         setLimit(prevLimit => prevLimit + 8 );

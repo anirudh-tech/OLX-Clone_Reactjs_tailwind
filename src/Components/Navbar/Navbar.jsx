@@ -3,13 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import { BiTargetLock, BiCheck, BiPlus } from "react-icons/bi";
 import { FiSearch, FiChevronDown, FiChevronUp, FiMapPin } from "react-icons/fi";
 import { AuthContext } from '../../context/AuthContext'
+import toast, { Toaster } from "react-hot-toast"
 import {auth} from "../../firebase/config"
 import { signOut } from "firebase/auth";
 function Navbar() {
     const user = useContext(AuthContext)
     const navigate = useNavigate();
     const checkUserAndNavigate = () => {
-        navigate('/add-product')
+        if(user && user.name){
+            navigate('/add-product')
+        }else{
+            toast.error("Please log in to add a product");
+        }
     }
 
     const handleLogout = () => {
@@ -38,11 +43,13 @@ function Navbar() {
 
     return (
         <nav className="flex px-10 py-2  bg-gray-100 items-center border-b-4 border-white shadow z-20 fixed w-full">
+            <Toaster/>
             <div>
                 <img
                     src="https://logos-world.net/wp-content/uploads/2022/04/OLX-Symbol.png"
                     alt="Something"
-                    className="w-11"
+                    className="w-11 cursor-pointer"
+                    onClick={()=>navigate('/')}
                 />
             </div>
             {/* Search Location */}

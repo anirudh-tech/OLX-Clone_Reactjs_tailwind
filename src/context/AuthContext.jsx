@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useLayoutEffect, useState } from 'react';
 import {onAuthStateChanged} from 'firebase/auth'
 import {db, auth} from '../firebase/config'
 import {doc, getDoc} from 'firebase/firestore'
@@ -6,7 +6,7 @@ import {doc, getDoc} from 'firebase/firestore'
 export const AuthContext = createContext(null);
 export default function AuthProvider({children}){
     const [user, setUser] = useState(null)
-    useEffect(() => { 
+    useLayoutEffect(() => { 
         onAuthStateChanged(auth, (currentUser) => {
             console.log(currentUser,"current user");
             console.log(user,"it is the user in the context")
